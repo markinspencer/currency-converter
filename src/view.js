@@ -5,7 +5,7 @@ const { div, h1, pre } = hh(h);
 
 const view = (dispatch, model) =>
   div({ className: 'mw6 center' }, [
-    h1({ className: 'f2 pv2 bb' }, 'Javascript Starter'),
+    h1({ className: 'f2 pv2 bb' }, 'Currency Converter'),
     pre(JSON.stringify(model, null, 2))
   ]);
 

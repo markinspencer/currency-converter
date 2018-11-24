@@ -1,4 +1,6 @@
-const update = (action, model) => {
+const MSGS = [];
+
+const update = (msg, model) => {
   switch (action.type) {
     default: {
       return model;

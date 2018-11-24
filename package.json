@@ -1,7 +1,6 @@
 {
-  "name": "vanilla-js-skeleton",
+  "name": "currency-converter",
   "version": "1.0.0",
-  "description": "Use this to quickly get a js project started",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --open"

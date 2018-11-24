@@ -1,2 +1,3 @@
-## Vanilla Js Starter
-quick start for projects not utilizing a javascript framework
+## Currency Converter
+
+requires an api key from [fixer.io]("https://fixer.io/") 

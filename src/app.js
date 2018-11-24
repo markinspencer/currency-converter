@@ -9,8 +9,8 @@ const app = (initModel, update, view, node) => {
   let rootNode = createElement(currentView);
   node.appendChild(rootNode);
 
-  function dispatch(action) {
-    model = update(action, model);
+  function dispatch(msg) {
+    model = update(msg, model);
     const updatedView = view(dispatch, model);
     const patches = diff(currentView, updatedView);
     rootNode = patch(rootNode, patches);
