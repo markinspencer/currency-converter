@@ -26,6 +26,7 @@
     "webpack-dev-server": "^2.9.4"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "hyperscript-helpers": "^3.0.3",
     "prettier": "^1.15.2",
     "ramda": "^0.25.0",
