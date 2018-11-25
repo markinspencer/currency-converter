@@ -1,30 +1,30 @@
 import hh from 'hyperscript-helpers';
 import { h } from 'virtual-dom';
-import * as R from 'ramda';
+import { formatCurrency } from './util';
+import {
+  topValueBlurMsg,
+  bottomValueBlurMsg,
+  topCurrencyChangeMsg,
+  bottomCurrencyChangeMsg
+} from './update';
 
 const { div, h1, h3, pre, form, input, select, option } = hh(h);
-
-const round = places =>
-  R.pipe(
-    num => num * 10 ** places,
-    Math.round,
-    num => num * 10 ** (-1 * places)
-  );
-
-const formatCurrency = R.curry((places, symbol, number) =>
-  R.pipe(
-    R.defaultTo(0),
-    round(places),
-    num => num.toFixed(places),
-    R.concat(symbol)
-  )(number)
-);
-
 const toMoney = formatCurrency(2);
 
-const currencySelect = (selected, currencies) =>
+const groupByCurrency = (acc, currency) => {
+  const { key, symbol, label } = currency;
+  return {
+    ...acc,
+    [key]: { symbol, label }
+  };
+};
+
+const currencySelect = (selected, currencies, selectMsg) =>
   select(
-    { className: 'dib ml2 w-40 f4 pa2 ba input-reset br1 bg-white b--black pointer' },
+    {
+      className: 'dib ml2 w-40 f4 pa2 ba input-reset br1 bg-white b--black pointer',
+      onchange: e => selectMsg(e.target.value)
+    },
     currencies.map(currency =>
       option(
         { className: 'tc', value: currency.key, selected: currency.key === selected },
@@ -33,32 +33,42 @@ const currencySelect = (selected, currencies) =>
     )
   );
 
-const currencySet = (value, currencyKey, currencies) =>
+const currencySet = (value, currencyKey, currencies, blurMsg, selectMsg) =>
   div({ className: 'db w-100 ma1' }, [
-    input({ className: 'dib w-40 f4 mv2 pa2 input-reset ba', value }),
-    currencySelect(currencyKey, currencies)
+    input({
+      className: 'dib w-40 f4 mv2 pa2 input-reset ba',
+      value,
+      onblur: e => blurMsg(e.target.value)
+    }),
+    currencySelect(currencyKey, currencies, selectMsg)
   ]);
 
-const currencyForm = model => {
-  const { baseValue, relativeValue, base, relative, currencies } = model;
+const currencyForm = (dispatch, model) => {
+  const { topValue, bottomValue, topKey, bottomKey, currencies } = model;
+
+  const topBlurMsg = val => dispatch(topValueBlurMsg(val));
+  const bottomBlurMsg = val => dispatch(bottomValueBlurMsg(val));
+  const topSelectChangeMsg = val => dispatch(topCurrencyChangeMsg(val));
+  const bottomSelectChangeMsg = val => dispatch(bottomCurrencyChangeMsg(val));
 
   return form({}, [
-    currencySet(baseValue, base, currencies),
-    currencySet(relativeValue, relative, currencies)
+    currencySet(topValue, topKey, currencies, topBlurMsg, topSelectChangeMsg),
+    currencySet(bottomValue, bottomKey, currencies, bottomBlurMsg, bottomSelectChangeMsg)
   ]);
 };
 
-const applicationState = model =>
-  div({}, [
-    h3({}, 'Application State'),
-    pre({ className: 'w-50' }, JSON.stringify(model, null, 2))
-  ]);
-
 const currencyDisplay = model => {
-  const { baseValue, base, relativeValue, relative, currencies, lastUpdate } = model;
+  const { topValue, topKey, bottomValue, bottomKey, currencies, sourceTop, lastUpdate } = model;
 
-  const baseCurrency = currencies.find(currency => currency.key === base);
-  const relativeCurrency = currencies.find(currency => currency.key === relative);
+  const currencyLookup = currencies.reduce(groupByCurrency, {});
+
+  const [baseCurrency, relativeCurrency] = sourceTop
+    ? [currencyLookup[topKey], currencyLookup[bottomKey]]
+    : [currencyLookup[bottomKey], currencyLookup[topKey]];
+
+  const [baseValue, relativeValue] = model.sourceTop
+    ? [topValue, bottomValue]
+    : [bottomValue, topValue];
 
   return div({}, [
     div(
@@ -73,6 +83,12 @@ const currencyDisplay = model => {
   ]);
 };
 
+const applicationState = model =>
+  div({}, [
+    h3({}, 'Application State'),
+    pre({ className: 'w-50' }, JSON.stringify(model, null, 2))
+  ]);
+
 const view = (dispatch, model) =>
   div({ className: 'mw9 center' }, [
     h1({ className: 'f2 pv2 bb' }, 'Currency Converter'),
@@ -80,7 +96,7 @@ const view = (dispatch, model) =>
       div({ className: 'w-50' }, [
         h3({}, 'Application'),
         currencyDisplay(model),
-        currencyForm(model)
+        currencyForm(dispatch, model)
       ]),
       applicationState(model)
     ])

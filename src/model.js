@@ -1,10 +1,9 @@
 const initModel = {
-  base: 'EUR',
-  relative: 'USD',
-  baseValue: '1',
-  relativeValue: '1.13',
+  topKey: 'EUR',
+  topValue: '1',
+  bottomKey: 'CAD',
+  bottomValue: '1.5',
   sourceTop: true,
-  keys: ['AUD', 'CAD', 'CNY', 'EUR', 'JPY', 'USD'],
   lastUpdate: new Date(),
   rates: {
     AUD: 1.566015,
@@ -12,8 +11,10 @@ const initModel = {
     CNY: 7.827874,
     EUR: 1,
     JPY: 132.360679,
-    USD: 1.23396
+    USD: 1.23396,
+    VND: 26512.02
   },
+  keys: ['AUD', 'CAD', 'CNY', 'EUR', 'JPY', 'USD', 'VND'],
   currencies: [
     { key: 'AUD', label: 'Austrailian Dollar', symbol: '$' },
     { key: 'CAD', label: 'Canadian Dollar', symbol: '$' },
