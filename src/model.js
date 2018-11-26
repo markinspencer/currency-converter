@@ -5,15 +5,7 @@ const initModel = {
   bottomValue: '1.5',
   sourceTop: true,
   lastUpdate: new Date(),
-  rates: {
-    AUD: 1.566015,
-    CAD: 1.560132,
-    CNY: 7.827874,
-    EUR: 1,
-    JPY: 132.360679,
-    USD: 1.23396,
-    VND: 26512.02
-  },
+  rates: {},
   keys: ['AUD', 'CAD', 'CNY', 'EUR', 'JPY', 'USD', 'VND'],
   currencies: [
     { key: 'AUD', label: 'Austrailian Dollar', symbol: '$' },
