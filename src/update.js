@@ -72,8 +72,7 @@ const update = (action, model) => {
         ...model,
         bottomValue,
         topValue: payload,
-        sourceTop: true,
-        lastUpdate: new Date()
+        sourceTop: true
       };
     }
 
@@ -89,8 +88,7 @@ const update = (action, model) => {
         ...model,
         topValue,
         bottomValue: payload,
-        sourceTop: false,
-        lastUpdate: new Date()
+        sourceTop: false
       };
     }
 
