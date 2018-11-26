@@ -48,6 +48,14 @@ const httpSuccessMsg = R.curry((key, response) => ({
   }
 }));
 
+const httpErrorMsg = R.curry((key, error) => ({
+  type: MSGS.HTTP_ERROR,
+  payload: {
+    key,
+    error
+  }
+}));
+
 const format = R.curry(formatCurrency(2, ''));
 
 const update = (action, model) => {
@@ -91,7 +99,11 @@ const update = (action, model) => {
 
       return [
         { ...model, topKey },
-        { request: { url: apiEndPoint(topKey, model.keys) }, successMsg: httpSuccessMsg(topKey) }
+        {
+          request: { url: apiEndPoint(topKey, model.keys) },
+          successMsg: httpSuccessMsg(topKey),
+          errorMsg: httpErrorMsg(topKey)
+        }
       ];
     }
 
@@ -112,8 +124,10 @@ const update = (action, model) => {
     }
 
     case MSGS.HTTP_SUCCESS: {
-      const { timestamp, rates } = action.payload.response.data;
-      const { bottomKey } = model;
+      const { timestamp, rates, success, error } = action.payload.response.data;
+      const { topKey, bottomKey } = model;
+
+      if (!success) return update(httpErrorMsg(topKey, error), model);
 
       const lastUpdate = new Date(timestamp * 1000);
       const { topValue: tVal, bottomValue: bVal, sourceTop } = model;
@@ -129,6 +143,13 @@ const update = (action, model) => {
         bottomValue,
         lastUpdate
       };
+    }
+
+    case MSGS.HTTP_ERROR: {
+      const { key, error } = action.payload;
+      // eslint-disable-next-line no-console
+      console.warn(`Error retrieving exchange rates for ${key}. ${error.info}`);
+      return model;
     }
 
     case MSGS.INITIALIZE_APP: {

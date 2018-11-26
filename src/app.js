@@ -9,9 +9,10 @@ import { initMsg } from './update';
 // Make an http request and fire off a message on successful response
 const httpEffects = (dispatch, command) => {
   if (command === null) return;
-  const { request, successMsg } = command;
-
-  axios(request).then(response => dispatch(successMsg(response)));
+  const { request, successMsg, errorMsg } = command;
+  axios(request)
+    .then(response => dispatch(successMsg(response)))
+    .catch(error => dispatch(errorMsg(error)));
 };
 
 const app = (initModel, update, view, node) => {
