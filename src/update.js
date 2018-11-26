@@ -156,7 +156,8 @@ const update = (action, model) => {
         model,
         {
           request: { url: apiEndPoint(topKey, keys) },
-          successMsg: httpSuccessMsg(topKey)
+          successMsg: httpSuccessMsg(topKey),
+          errorMsg: httpErrorMsg(topKey)
         }
       ];
     }
