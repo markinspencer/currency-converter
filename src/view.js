@@ -2,8 +2,8 @@ import hh from 'hyperscript-helpers';
 import { h } from 'virtual-dom';
 import { formatCurrency } from './util';
 import {
-  topValueBlurMsg,
-  bottomValueBlurMsg,
+  topValueInputMsg,
+  bottomValueInputMsg,
   topCurrencyChangeMsg,
   bottomCurrencyChangeMsg
 } from './update';
@@ -33,12 +33,12 @@ const currencySelect = (selected, currencies, selectMsg) =>
     )
   );
 
-const currencySet = (value, currencyKey, currencies, blurMsg, selectMsg) =>
+const currencySet = (value, currencyKey, currencies, inputMsg, selectMsg) =>
   div({ className: 'db w-100 ma1' }, [
     input({
       className: 'dib w-40 f4 mv2 pa2 input-reset ba',
       value,
-      onblur: e => blurMsg(e.target.value)
+      oninput: e => inputMsg(e.target.value)
     }),
     currencySelect(currencyKey, currencies, selectMsg)
   ]);
@@ -46,8 +46,8 @@ const currencySet = (value, currencyKey, currencies, blurMsg, selectMsg) =>
 const currencyForm = (dispatch, model) => {
   const { topValue, bottomValue, topKey, bottomKey, currencies } = model;
 
-  const topBlurMsg = val => dispatch(topValueBlurMsg(val));
-  const bottomBlurMsg = val => dispatch(bottomValueBlurMsg(val));
+  const topBlurMsg = val => dispatch(topValueInputMsg(val));
+  const bottomBlurMsg = val => dispatch(bottomValueInputMsg(val));
   const topSelectChangeMsg = val => dispatch(topCurrencyChangeMsg(val));
   const bottomSelectChangeMsg = val => dispatch(bottomCurrencyChangeMsg(val));
 

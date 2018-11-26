@@ -1,14 +1,14 @@
 import * as R from 'ramda';
 import { formatCurrency } from './util';
 
-const API_KEY = ``; /* YOUR API KEY HERE */
+const API_KEY = `609628ecb5ece620621ca8de720ec610`; /* YOUR API KEY HERE */
 
 const apiEndPoint = (base, keys) =>
   `http://data.fixer.io/api/latest?access_key=${API_KEY}&base=${base}&symbols=${keys}`;
 
 const MSGS = {
-  TOP_VALUE_BLUR: 'TOP_VALUE_BLUR',
-  BOTTOM_VALUE_BLUR: 'BOTTOM_VALUE_BLUR',
+  TOP_VALUE_INPUT: 'TOP_VALUE_INPUT',
+  BOTTOM_VALUE_INPUT: 'BOTTOM_VALUE_INPUT',
   TOP_CURRENCY_CHANGE: 'TOP_CURRENCY_CHANGE',
   BOTTOM_CURRENCY_CHANGE: 'BOTTOM_CURRENCY_CHANGE',
   HTTP_SUCCESS: 'HTTP_SUCCESS',
@@ -16,13 +16,13 @@ const MSGS = {
   INITIALIZE_APP: 'INITIALIZE_APP'
 };
 
-export const topValueBlurMsg = payload => ({
-  type: MSGS.TOP_VALUE_BLUR,
+export const topValueInputMsg = payload => ({
+  type: MSGS.TOP_VALUE_INPUT,
   payload
 });
 
-export const bottomValueBlurMsg = payload => ({
-  type: MSGS.BOTTOM_VALUE_BLUR,
+export const bottomValueInputMsg = payload => ({
+  type: MSGS.BOTTOM_VALUE_INPUT,
   payload
 });
 
@@ -60,7 +60,7 @@ const format = R.curry(formatCurrency(2, ''));
 
 const update = (action, model) => {
   switch (action.type) {
-    case MSGS.TOP_VALUE_BLUR: {
+    case MSGS.TOP_VALUE_INPUT: {
       const { payload } = action;
       const { topValue, rates, bottomKey } = model;
 
@@ -76,7 +76,7 @@ const update = (action, model) => {
       };
     }
 
-    case MSGS.BOTTOM_VALUE_BLUR: {
+    case MSGS.BOTTOM_VALUE_INPUT: {
       const { payload } = action;
       const { bottomValue, rates, bottomKey } = model;
 
