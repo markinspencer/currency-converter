@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import { formatCurrency } from './util';
 
-const API_KEY = `9b6fb19b083f99bc6fc75fb0c7bfbdc3`; /* YOUR API KEY HERE */
+const API_KEY = ``; /* YOUR API KEY HERE */
 
 const apiEndPoint = (base, keys) =>
   `http://data.fixer.io/api/latest?access_key=${API_KEY}&base=${base}&symbols=${keys}`;
