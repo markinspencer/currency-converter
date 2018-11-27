@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import hh from 'hyperscript-helpers';
 import { h } from 'virtual-dom';
 import { formatCurrency } from './util';
@@ -19,18 +20,26 @@ const groupByCurrency = (acc, currency) => {
   };
 };
 
+const currencyOptions = (selected, currencies) => {
+  const toOption = currency => {
+    const { key, label, symbol } = currency;
+
+    return option(
+      { className: 'tc', value: key, selected: key === selected },
+      `${label} (${symbol})`
+    );
+  };
+
+  return currencies.map(toOption);
+};
+
 const currencySelect = (selected, currencies, selectMsg) =>
   select(
     {
       className: 'dib ml2 w-40 f4 pa2 ba input-reset br1 bg-white b--black pointer',
       onchange: e => selectMsg(e.target.value)
     },
-    currencies.map(currency =>
-      option(
-        { className: 'tc', value: currency.key, selected: currency.key === selected },
-        `${currency.label} (${currency.symbol})`
-      )
-    )
+    currencyOptions(selected, currencies)
   );
 
 const currencySet = (value, currencyKey, currencies, inputMsg, selectMsg) =>

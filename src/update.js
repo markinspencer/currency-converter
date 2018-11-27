@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import { formatCurrency } from './util';
 
-const API_KEY = ``; /* YOUR API KEY HERE */
+const API_KEY = `9b6fb19b083f99bc6fc75fb0c7bfbdc3`; /* YOUR API KEY HERE */
 
 const apiEndPoint = (base, keys) =>
   `http://data.fixer.io/api/latest?access_key=${API_KEY}&base=${base}&symbols=${keys}`;
@@ -106,18 +106,18 @@ const update = (action, model) => {
     }
 
     case MSGS.BOTTOM_CURRENCY_CHANGE: {
-      const { payload } = action;
+      const { payload: key } = action;
       const { topValue: tVal, bottomValue: bVal, rates, sourceTop } = model;
 
       const [topValue, bottomValue] = sourceTop
-        ? [tVal, format(tVal * rates[payload])]
-        : [format(bVal / rates[payload]), bVal];
+        ? [tVal, format(tVal * rates[key])]
+        : [format(bVal / rates[key]), bVal];
 
       return {
         ...model,
         topValue,
         bottomValue,
-        bottomKey: payload
+        bottomKey: key
       };
     }
 
