@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import { formatCurrency } from './util';
 
-const API_KEY = ``; /* YOUR API KEY HERE */
+const API_KEY = `9d5c5b19556837324d06861e81a507c8`; /* YOUR API KEY HERE */
 
 const apiEndPoint = (base, keys) =>
   `http://data.fixer.io/api/latest?access_key=${API_KEY}&base=${base}&symbols=${keys}`;
@@ -58,6 +58,17 @@ const httpErrorMsg = R.curry((key, error) => ({
 
 const format = R.curry(formatCurrency(2, ''));
 
+const calculateAndFormat = (key, model) => {
+  const { topValue, bottomValue, rates, sourceTop } = model;
+
+  const rate = rates[key];
+
+  const value = sourceTop ? topValue * rate : bottomValue / rate;
+
+  const formatted = format(value);
+  return formatted;
+};
+
 const update = (msg, model) => {
   switch (msg.type) {
     case MSGS.TOP_VALUE_INPUT: {
@@ -107,16 +118,16 @@ const update = (msg, model) => {
 
     case MSGS.BOTTOM_CURRENCY_CHANGE: {
       const { payload: key } = msg;
-      const { topValue: tVal, bottomValue: bVal, rates, sourceTop } = model;
+      const { topValue, bottomValue, sourceTop } = model;
 
-      const [topValue, bottomValue] = sourceTop
-        ? [tVal, format(tVal * rates[key])]
-        : [format(bVal / rates[key]), bVal];
+      const [tVal, bVal] = sourceTop
+        ? [topValue, calculateAndFormat(key, model)]
+        : [calculateAndFormat(key, model), bottomValue];
 
       return {
         ...model,
-        topValue,
-        bottomValue,
+        topValue: tVal,
+        bottomValue: bVal,
         bottomKey: key
       };
     }
