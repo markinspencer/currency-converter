@@ -58,10 +58,10 @@ const httpErrorMsg = R.curry((key, error) => ({
 
 const format = R.curry(formatCurrency(2, ''));
 
-const update = (action, model) => {
-  switch (action.type) {
+const update = (msg, model) => {
+  switch (msg.type) {
     case MSGS.TOP_VALUE_INPUT: {
-      const { payload } = action;
+      const { payload } = msg;
       const { topValue, rates, bottomKey } = model;
 
       if (payload === topValue) return model;
@@ -77,7 +77,7 @@ const update = (action, model) => {
     }
 
     case MSGS.BOTTOM_VALUE_INPUT: {
-      const { payload } = action;
+      const { payload } = msg;
       const { bottomValue, rates, bottomKey } = model;
 
       if (payload === bottomValue) return model;
@@ -93,7 +93,7 @@ const update = (action, model) => {
     }
 
     case MSGS.TOP_CURRENCY_CHANGE: {
-      const { payload: topKey } = action;
+      const { payload: topKey } = msg;
 
       return [
         { ...model, topKey },
@@ -106,7 +106,7 @@ const update = (action, model) => {
     }
 
     case MSGS.BOTTOM_CURRENCY_CHANGE: {
-      const { payload: key } = action;
+      const { payload: key } = msg;
       const { topValue: tVal, bottomValue: bVal, rates, sourceTop } = model;
 
       const [topValue, bottomValue] = sourceTop
@@ -122,7 +122,7 @@ const update = (action, model) => {
     }
 
     case MSGS.HTTP_SUCCESS: {
-      const { timestamp, rates, success, error } = action.payload.response.data;
+      const { timestamp, rates, success, error } = msg.payload.response.data;
       const { topKey, bottomKey } = model;
 
       if (!success) return update(httpErrorMsg(topKey, error), model);
@@ -144,7 +144,7 @@ const update = (action, model) => {
     }
 
     case MSGS.HTTP_ERROR: {
-      const { key, error } = action.payload;
+      const { key, error } = msg.payload;
       // eslint-disable-next-line no-console
       console.warn(`Error retrieving exchange rates for ${key}. ${error.info}`);
       return model;
